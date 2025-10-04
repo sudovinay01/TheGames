@@ -37,9 +37,9 @@ jobs:
 
       - name: Build TheGames subproject
         working-directory: TheGames
+        # Use the VITE_BASE value from the environment (set earlier via $GITHUB_ENV)
         env:
-          # Optional: set VITE_BASE in repository secrets if serving under /<repo>/
-          VITE_BASE: ${{ secrets.VITE_BASE }}
+          VITE_BASE: ${{ env.VITE_BASE }}
         run: |
           npm ci
           npm run build
