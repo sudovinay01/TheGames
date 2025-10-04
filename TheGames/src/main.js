@@ -40,12 +40,17 @@ try {
 // --- Service worker registration ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Use Vite's runtime base so the SW path works for project pages served under a subpath
-    // import.meta.env.BASE_URL is set by Vite to the `base` option at build time.
-    const swPath = `${import.meta.env.BASE_URL || import.meta.env.VITE_BASE || '/'}sw.js`;
-    navigator.serviceWorker.register(swPath).then((reg) => {
-      console.log('Service worker registered:', reg.scope);
-    }).catch((err) => console.warn('SW registration failed:', err));
+    // Resolve service worker URL at runtime using the page's base so it works even if
+    // the build-time base wasn't applied as expected. This computes an absolute URL
+    // for 'sw.js' relative to the current document base (e.g. https://.../TheGames/sw.js).
+    try {
+      const swUrl = new URL('sw.js', document.baseURI).href;
+      navigator.serviceWorker.register(swUrl).then((reg) => {
+        console.log('Service worker registered:', reg.scope);
+      }).catch((err) => console.warn('SW registration failed:', err));
+    } catch (err) {
+      console.warn('SW registration failed (invalid URL):', err);
+    }
   });
 }
 
