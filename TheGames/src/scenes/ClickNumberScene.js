@@ -7,7 +7,7 @@ export default class ClickNumberScene extends Phaser.Scene {
     this.targetNumber = null;
     this.circleNumbers = [];
     this.score = 0;
-    this.lives = 3;
+    // this.lives removed — single-mistake game over
     this.circles = [];
     this.numberText = null;
     this.scoreText = null;
@@ -79,7 +79,7 @@ export default class ClickNumberScene extends Phaser.Scene {
 
     // Score and lives below bar
     this.scoreText = this.add.text(20, barHeight + 8, `Score: ${this.score}`, { fontSize: '20px', color: textColor });
-    this.livesText = this.add.text(width - 20, barHeight + 8, `Lives: ${this.lives}`, { fontSize: '20px', color: textColor }).setOrigin(1, 0);
+    // no lives display anymore; one wrong click = game over
 
     // target number
     this.targetNumber = Phaser.Math.Between(0, GAME_CONFIG.MAX_NUMBER);
@@ -187,11 +187,50 @@ export default class ClickNumberScene extends Phaser.Scene {
       this.numberText.setText(this.targetNumber);
       this.changeCircleNumbers();
     } else {
-      this.lives--;
-      this.livesText.setText(`Lives: ${this.lives}`);
-      if (this.lives <= 0) this.scene.restart();
+        // immediate game over on wrong click
+        this._showGameOver();
     }
   }
+
+    _showGameOver() {
+      const { width, height } = this.sys.game.canvas;
+      const overlay = this.add.rectangle(width / 2, height / 2, width * 0.9, height * 0.6, 0x000000, 0.8)
+        .setOrigin(0.5)
+        .setDepth(50);
+      const textColor = '#ffffff';
+      const title = this.add.text(width / 2, height / 2 - 60, 'Game Over', { fontSize: '36px', color: textColor }).setOrigin(0.5).setDepth(51);
+      const scoreText = this.add.text(width / 2, height / 2 - 10, `Score: ${this.score}`, { fontSize: '28px', color: textColor }).setOrigin(0.5).setDepth(51);
+      const highScoreText = this.add.text(width / 2, height / 2 + 20, `High Score: ${this.highScore}`, { fontSize: '20px', color: textColor }).setOrigin(0.5).setDepth(51);
+      const playAgain = this.add.rectangle(width / 2, height / 2 + 60, 160, 48, 0x2ecc71, 1)
+        .setOrigin(0.5)
+        .setDepth(51)
+        .setInteractive({ useHandCursor: true });
+      const playText = this.add.text(playAgain.x, playAgain.y, 'Play Again', { fontSize: '20px', color: '#072015' }).setOrigin(0.5).setDepth(52);
+
+      // pulsing tween for the button
+      const pulse = this.tweens.add({
+        targets: playAgain,
+        scaleX: 1.05,
+        scaleY: 1.05,
+        duration: 600,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut'
+      });
+
+      const cleanupAndRestart = () => {
+        if (pulse) pulse.stop();
+        overlay.destroy();
+        title.destroy();
+        scoreText.destroy();
+        highScoreText.destroy();
+        playAgain.destroy();
+        playText.destroy();
+        this.scene.restart();
+      };
+
+      playAgain.on('pointerup', cleanupAndRestart);
+    }
 
   _cleanup() {
     if (this.changeTimerEvent) {
