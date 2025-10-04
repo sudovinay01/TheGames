@@ -1,4 +1,7 @@
 
+
+
+
 import Phaser from 'phaser';
 import WelcomeScene from './scenes/WelcomeScene.js';
 import ClickNumberScene from './scenes/ClickNumberScene.js';
@@ -7,7 +10,7 @@ const config = {
   type: Phaser.AUTO,
   width: 480,
   height: 800,
-  backgroundColor: '#f5f5f5',
+  backgroundColor: '#181a1b',
   parent: 'app',
   scene: [WelcomeScene, ClickNumberScene],
   scale: {

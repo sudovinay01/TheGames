@@ -17,34 +17,40 @@ export default class ClickNumberScene extends Phaser.Scene {
   preload() {}
 
   create() {
+
     const { width, height } = this.sys.game.canvas;
+    const barHeight = 56;
+  const barColor = 0x23272f;
+  const textColor = '#f5f6fa';
+  const circleColor = 0x23272f;
+  const circleStroke = 0xf5f6fa;
 
 
     // Top bar background
-    const barHeight = 56;
-    this.add.rectangle(width / 2, barHeight / 2, width, barHeight, 0xf5f5f5, 1).setOrigin(0.5);
+    this.add.rectangle(width / 2, barHeight / 2, width, barHeight, barColor, 1).setOrigin(0.5);
 
     // Back button (top left with symbol)
-    const backBtn = this.add.rectangle(32, barHeight / 2, 44, 44, 0xffffff, 1)
-      .setStrokeStyle(2, 0x222222)
+    const backBtn = this.add.rectangle(32, barHeight / 2, 44, 44, circleColor, 1)
+      .setStrokeStyle(2, circleStroke)
       .setInteractive({ useHandCursor: true });
-    this.add.text(32, barHeight / 2, '←', { fontSize: '28px', color: '#222' }).setOrigin(0.5);
+    this.add.text(32, barHeight / 2, '←', { fontSize: '28px', color: textColor }).setOrigin(0.5);
     backBtn.on('pointerdown', () => {
       this.scene.start('WelcomeScene');
     });
 
     // Game name in top bar
-    this.add.text(width / 2, barHeight / 2, 'ClickNumber', { fontSize: '22px', color: '#222', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(width / 2, barHeight / 2, 'ClickNumber', { fontSize: '22px', color: textColor, fontStyle: 'bold' }).setOrigin(0.5);
+
 
     // Score and lives below bar
-    this.scoreText = this.add.text(20, barHeight + 8, `Score: ${this.score}`, { fontSize: '20px', color: '#222' });
-    this.livesText = this.add.text(width - 20, barHeight + 8, `Lives: ${this.lives}`, { fontSize: '20px', color: '#222' }).setOrigin(1, 0);
+    this.scoreText = this.add.text(20, barHeight + 8, `Score: ${this.score}`, { fontSize: '20px', color: textColor });
+    this.livesText = this.add.text(width - 20, barHeight + 8, `Lives: ${this.lives}`, { fontSize: '20px', color: textColor }).setOrigin(1, 0);
 
     // Top section: target number
     this.targetNumber = Phaser.Math.Between(1, 9);
     this.numberText = this.add.text(width / 2, barHeight + 80, this.targetNumber, {
       fontSize: '64px',
-      color: '#222',
+      color: '#fff',
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
@@ -56,6 +62,9 @@ export default class ClickNumberScene extends Phaser.Scene {
 
   createCircles() {
     const { width, height } = this.sys.game.canvas;
+  const circleColor = 0x23272f;
+  const circleStroke = 0xf5f6fa;
+  const textColor = '#f5f6fa';
     const circleY = height * 0.7;
     const spacing = 120;
     const startX = width / 2 - spacing;
@@ -64,10 +73,10 @@ export default class ClickNumberScene extends Phaser.Scene {
     for (let i = 0; i < 3; i++) {
       const num = Phaser.Math.Between(1, 9);
       this.circleNumbers.push(num);
-      const circle = this.add.circle(startX + i * spacing, circleY, 50, 0xffffff, 1)
-        .setStrokeStyle(4, 0x222222)
+      const circle = this.add.circle(startX + i * spacing, circleY, 50, circleColor, 1)
+        .setStrokeStyle(4, circleStroke)
         .setInteractive();
-      const text = this.add.text(circle.x, circle.y, num, { fontSize: '40px', color: '#222' }).setOrigin(0.5);
+      const text = this.add.text(circle.x, circle.y, num, { fontSize: '40px', color: textColor }).setOrigin(0.5);
       circle.number = num;
       circle.textObj = text;
       this.circles.push(circle);
