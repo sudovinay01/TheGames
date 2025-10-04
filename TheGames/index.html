@@ -3,11 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#1f2937">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="TheGames">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>thegames</title>
   </head>
   <body>
     <div id="app"></div>
+  <button id="pwa-install-button" style="position:fixed;right:12px;bottom:12px;padding:10px 14px;border-radius:999px;border:none;background:#111;color:#fff;display:none;z-index:9999;align-items:center;gap:8px;">
+      <span id="pwa-install-icon" aria-hidden="true" style="width:24px;height:24px;display:inline-block;background:url('/vite.svg') center/contain no-repeat;border-radius:6px"></span>
+      <span id="pwa-install-label">Install</span>
+      <span id="pwa-install-badge" aria-hidden="true" style="display:inline-block;min-width:20px;padding:2px 6px;border-radius:999px;font-size:0.75rem;background:linear-gradient(90deg,#ff7a18,#af002d);color:white;font-weight:700;margin-left:6px;box-shadow:0 6px 18px rgba(175,0,45,0.3)">NEW</span>
+    </button>
+    <!-- Custom install modal (hidden by default) -->
+    <div id="pwa-install-modal" aria-hidden="true" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:10000;">
+      <div role="dialog" aria-modal="true" aria-labelledby="pwa-install-title" style="background:var(--bg);color:var(--fg);padding:20px;border-radius:12px;max-width:420px;margin:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35);">
+        <h3 id="pwa-install-title" style="margin-top:0">Install TheGames</h3>
+        <p id="pwa-install-desc">Install the app for a better experience and offline play.</p>
+  <div id="pwa-native-status" style="margin-top:8px;font-size:0.9rem;color:var(--fg);opacity:0.85">Native prompt: unknown</div>
+        <div id="pwa-install-instructions" style="display:none;margin:8px 0;padding:12px;background:var(--bar-bg);border-radius:8px;font-size:0.95rem;"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+          <button id="pwa-install-now" type="button" class="phaser-btn">Install</button>
+          <button id="pwa-install-later" type="button" class="phaser-btn" style="background:transparent;border:1px solid rgba(0,0,0,0.08)">Maybe later</button>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
