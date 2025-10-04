@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG, uniqueRandomNumbers, loadHighScore, saveHighScore, SCENE_KEYS } from '../utils/gameUtils.js';
+import { GAME_CONFIG, uniqueRandomNumbers, loadHighScore, saveHighScore, SCENE_KEYS, TARGET_APPEAR_PROB } from '../utils/gameUtils.js';
 
 export default class ClickNumberScene extends Phaser.Scene {
   constructor() {
@@ -14,6 +14,21 @@ export default class ClickNumberScene extends Phaser.Scene {
     this.livesText = null;
     this.changeTimerEvent = null;
     this.highScore = 0;
+    // keep the last N rounds of numbers for exclusion (N=2)
+    this._previousRounds = [];
+    this._excludeRounds = 2;
+  }
+
+  // return a deduplicated array of numbers to exclude when generating new circles
+  _gatherExclusions(includeCurrent = false) {
+    const vals = [];
+    if (includeCurrent && Array.isArray(this.circleNumbers) && this.circleNumbers.length) {
+      vals.push(...this.circleNumbers);
+    }
+    for (const r of this._previousRounds) {
+      if (Array.isArray(r) && r.length) vals.push(...r);
+    }
+    return Array.from(new Set(vals));
   }
 
   preload() {}
@@ -102,7 +117,14 @@ export default class ClickNumberScene extends Phaser.Scene {
     this.circles = [];
     this.circleNumbers = [];
 
-    const nums = uniqueRandomNumbers(GAME_CONFIG.CIRCLE_COUNT, GAME_CONFIG.MAX_NUMBER, this.targetNumber);
+    // Decide whether the target should appear in this round
+    const includeTarget = Math.random() < TARGET_APPEAR_PROB ? this.targetNumber : null;
+    const nums = uniqueRandomNumbers(
+      GAME_CONFIG.CIRCLE_COUNT,
+      GAME_CONFIG.MAX_NUMBER,
+      includeTarget,
+      this._gatherExclusions(false)
+    );
     for (let i = 0; i < GAME_CONFIG.CIRCLE_COUNT; i++) {
       const num = nums[i];
       this.circleNumbers.push(num);
@@ -118,7 +140,22 @@ export default class ClickNumberScene extends Phaser.Scene {
 
   changeCircleNumbers() {
     if (!this.circles || this.circles.length < GAME_CONFIG.CIRCLE_COUNT) return;
-    const nums = uniqueRandomNumbers(GAME_CONFIG.CIRCLE_COUNT, GAME_CONFIG.MAX_NUMBER, this.targetNumber);
+    // When changing numbers, avoid using numbers that were shown in the previous N rounds
+    // include the numbers currently shown as well so they don't immediately repeat
+    const includeTarget = Math.random() < TARGET_APPEAR_PROB ? this.targetNumber : null;
+    const excludeList = this._gatherExclusions(true);
+    const nums = uniqueRandomNumbers(
+      GAME_CONFIG.CIRCLE_COUNT,
+      GAME_CONFIG.MAX_NUMBER,
+      includeTarget,
+      excludeList
+    );
+    // push the current round numbers into the previous rounds history
+    if (Array.isArray(this.circleNumbers) && this.circleNumbers.length) {
+      this._previousRounds.unshift([...this.circleNumbers]);
+      // keep only the last N rounds
+      if (this._previousRounds.length > this._excludeRounds) this._previousRounds.length = this._excludeRounds;
+    }
     for (let i = 0; i < nums.length; i++) {
       this.circleNumbers[i] = nums[i];
       const c = this.circles[i];
@@ -139,6 +176,12 @@ export default class ClickNumberScene extends Phaser.Scene {
       if (this.score > this.highScore) {
         this.highScore = this.score;
         saveHighScore(GAME_CONFIG.STORAGE_KEY_CLICKNUMBER_HS, this.highScore);
+      }
+      // After successful click, pick a new target and update circles.
+      // Store this round into previous rounds history to exclude in the next N rounds.
+      if (Array.isArray(this.circleNumbers) && this.circleNumbers.length) {
+        this._previousRounds.unshift([...this.circleNumbers]);
+        if (this._previousRounds.length > this._excludeRounds) this._previousRounds.length = this._excludeRounds;
       }
       this.targetNumber = Phaser.Math.Between(0, GAME_CONFIG.MAX_NUMBER);
       this.numberText.setText(this.targetNumber);
