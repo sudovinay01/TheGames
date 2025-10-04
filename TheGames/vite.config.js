@@ -5,6 +5,9 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   root: path.resolve(__dirname),
+  // Allow overriding the base at build time via the VITE_BASE env var or BASE_URL
+  // Useful when deploying to GitHub Pages under a repo subpath (e.g. /<repo>/)
+  base: process.env.VITE_BASE || process.env.BASE_URL || '/',
   server: {
     host: true, // listen on all addresses, required for devcontainers
     port: 5173,
