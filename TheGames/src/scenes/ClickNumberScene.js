@@ -47,7 +47,7 @@ export default class ClickNumberScene extends Phaser.Scene {
     this.livesText = this.add.text(width - 20, barHeight + 8, `Lives: ${this.lives}`, { fontSize: '20px', color: textColor }).setOrigin(1, 0);
 
     // Top section: target number
-    this.targetNumber = Phaser.Math.Between(1, 9);
+  this.targetNumber = Phaser.Math.Between(0, 21);
     this.numberText = this.add.text(width / 2, barHeight + 80, this.targetNumber, {
       fontSize: '64px',
       color: '#fff',
@@ -62,16 +62,22 @@ export default class ClickNumberScene extends Phaser.Scene {
 
   createCircles() {
     const { width, height } = this.sys.game.canvas;
-  const circleColor = 0x23272f;
-  const circleStroke = 0xf5f6fa;
-  const textColor = '#f5f6fa';
+    const circleColor = 0x23272f;
+    const circleStroke = 0xf5f6fa;
+    const textColor = '#f5f6fa';
     const circleY = height * 0.7;
     const spacing = 120;
     const startX = width / 2 - spacing;
     this.circles = [];
     this.circleNumbers = [];
+    // Generate 3 unique numbers in range 0-21
+    let nums = [];
+    while (nums.length < 3) {
+      let n = Phaser.Math.Between(0, 21);
+      if (!nums.includes(n)) nums.push(n);
+    }
     for (let i = 0; i < 3; i++) {
-      const num = Phaser.Math.Between(1, 9);
+      const num = nums[i];
       this.circleNumbers.push(num);
       const circle = this.add.circle(startX + i * spacing, circleY, 50, circleColor, 1)
         .setStrokeStyle(4, circleStroke)
@@ -92,15 +98,25 @@ export default class ClickNumberScene extends Phaser.Scene {
   }
 
   changeCircleNumbers() {
+    // Generate 3 unique numbers in range 0-21, at least one matches target
+    let nums = [];
+    // Place the target number in a random position
+    const targetPos = Phaser.Math.Between(0, 2);
     for (let i = 0; i < 3; i++) {
-      let num = Phaser.Math.Between(1, 9);
-      // Ensure at least one matches target
-      if (i === 2 && !this.circleNumbers.includes(this.targetNumber)) {
-        num = this.targetNumber;
+      if (i === targetPos) {
+        nums.push(this.targetNumber);
+      } else {
+        let n;
+        do {
+          n = Phaser.Math.Between(0, 21);
+        } while (nums.includes(n) || n === this.targetNumber);
+        nums.push(n);
       }
-      this.circleNumbers[i] = num;
-      this.circles[i].number = num;
-      this.circles[i].textObj.setText(num);
+    }
+    for (let i = 0; i < 3; i++) {
+      this.circleNumbers[i] = nums[i];
+      this.circles[i].number = nums[i];
+      this.circles[i].textObj.setText(nums[i]);
     }
   }
 

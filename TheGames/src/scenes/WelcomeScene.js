@@ -18,7 +18,7 @@ export default class WelcomeScene extends Phaser.Scene {
 
 
     // Welcome message
-    this.add.text(width / 2, barHeight + 48, 'Welcome!', {
+    this.add.text(width / 2, barHeight + 48, 'Select a game!', {
       fontSize: '32px',
       color: textColor,
       fontStyle: 'bold',
@@ -26,7 +26,7 @@ export default class WelcomeScene extends Phaser.Scene {
 
     // List of games (currently only one)
     const games = [
-      { name: 'ClickNumber', scene: 'ClickNumberScene', description: 'Tap the matching number!' }
+      { name: '⏱️🏁🔢ClickNumber', scene: 'ClickNumberScene', description: 'Tap the matching number!' }
     ];
 
     games.forEach((game, idx) => {
