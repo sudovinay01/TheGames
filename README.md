@@ -1,4 +1,4 @@
-# TheGames
+# TheGames 🏁
 
 Phaser + Vite PWA mini-games project.
 
