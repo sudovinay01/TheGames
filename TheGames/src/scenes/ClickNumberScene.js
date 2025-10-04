@@ -54,29 +54,10 @@ export default class ClickNumberScene extends Phaser.Scene {
   const backArrow = this.add.text(backX, backY, '←', { fontSize: '28px', color: textColor }).setOrigin(0.5).setDepth(62);
   // Make the visible rectangle itself interactive so the hit area matches the visible button
   backRect.setInteractive({ useHandCursor: true });
-  // Debug stroke aligned to the rect
-  const debugHit = this.add.rectangle(backX, backY, 64, 64).setOrigin(0.5).setStrokeStyle(2, 0xff0000).setDepth(63);
-
-  // Visual feedback for the interactive hit area
-  backRect.on('pointerover', () => debugHit.setStrokeStyle(3, 0x00ff00));
-  backRect.on('pointerout', () => debugHit.setStrokeStyle(2, 0xff0000));
-  backRect.on('pointerdown', () => debugHit.setStrokeStyle(3, 0x0000ff));
-  backRect.on('pointerup', () => debugHit.setStrokeStyle(3, 0x00ff00));
-  // Log backRect events for debugging
-  backRect.on('pointerup', (p) => console.log('BACKRECT pointerup', { x: p.x, y: p.y, clientX: p.event && p.event.clientX }));
-  backRect.on('pointerover', (p) => console.log('BACKRECT pointerover', { x: p.x, y: p.y, clientX: p.event && p.event.clientX }));
 
     this.input.enabled = true;
 
-    // Debug: log pointer and canvas metrics to diagnose desktop offset issues
-    this.input.on('pointerdown', (pointer) => {
-      const canvasRect = this.sys.game.canvas.getBoundingClientRect();
-      // pointer.event may be the native DOM event
-      const clientX = pointer.event && pointer.event.clientX !== undefined ? pointer.event.clientX : null;
-      const clientY = pointer.event && pointer.event.clientY !== undefined ? pointer.event.clientY : null;
-      // Phaser pointer x/y are relative to the game canvas
-  console.log('GLOBAL POINTERDOWN', { px: pointer.x, py: pointer.y, worldX: pointer.worldX, worldY: pointer.worldY, clientX, clientY, canvasRect, canvasClientW: this.sys.game.canvas.clientWidth, canvasClientH: this.sys.game.canvas.clientHeight });
-    });
+    // (debug logging removed)
 
     const goBack = () => {
       this.scene.stop(SCENE_KEYS.CLICK_NUMBER);

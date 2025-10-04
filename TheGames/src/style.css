@@ -19,6 +19,18 @@ html, body {
   overflow: hidden;
 }
 
+/* Ensure the app respects safe-area insets (iOS notch / status bar) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0);
+  background: var(--bg);
+  z-index: 0;
+}
+
 /* Center the game canvas and prevent stretching on desktop */
 
 #app {
@@ -103,6 +115,17 @@ canvas {
   }
 
   /* leave canvas sizing to Phaser; we only adjust container alignment for small screens */
+}
+
+/* Extra narrow-width rule for phones that didn't match the earlier query */
+@media (max-width: 480px) {
+  .game-container {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: env(safe-area-inset-top, 12px);
+    width: 100vw;
+    height: 100vh;
+  }
 }
 
 /* Modern button style for Phaser rectangles (if using DOM buttons, not Phaser) */
