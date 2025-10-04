@@ -26,7 +26,7 @@ export default class WelcomeScene extends Phaser.Scene {
 
     // List of games (currently only one)
     const games = [
-      { name: '⏱️🏁🔢ClickNumber', scene: 'ClickNumberScene', description: 'Tap the matching number!' }
+      { name: '🔢ClickNumber', scene: 'ClickNumberScene', description: 'Tap the matching number!' }
     ];
 
     games.forEach((game, idx) => {
