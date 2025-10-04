@@ -174,12 +174,6 @@ export default class ClickNumberScene extends Phaser.Scene {
     if (circle.number === this.targetNumber) {
       this.score++;
       this.scoreText.setText(`Score: ${this.score}`);
-      if (this.score > this.highScore) {
-        this.highScore = this.score;
-        saveHighScore(GAME_CONFIG.STORAGE_KEY_CLICKNUMBER_HS, this.highScore);
-        // new high score — emit confetti
-        this._emitConfetti();
-      }
       // After successful click, pick a new target and update circles.
       // Store this round into previous rounds history to exclude in the next N rounds.
       if (Array.isArray(this.circleNumbers) && this.circleNumbers.length) {
@@ -190,8 +184,8 @@ export default class ClickNumberScene extends Phaser.Scene {
       this.numberText.setText(this.targetNumber);
       this.changeCircleNumbers();
     } else {
-        // immediate game over on wrong click
-        this._showGameOver();
+      // immediate game over on wrong click
+      this._showGameOver();
     }
   }
 
@@ -239,6 +233,15 @@ export default class ClickNumberScene extends Phaser.Scene {
 
     _showGameOver() {
       const { width, height } = this.sys.game.canvas;
+      let isNewHigh = false;
+      if (this.score > this.highScore) {
+        this.highScore = this.score;
+        saveHighScore(GAME_CONFIG.STORAGE_KEY_CLICKNUMBER_HS, this.highScore);
+        isNewHigh = true;
+      }
+      if (isNewHigh) {
+        this._emitConfetti();
+      }
       const overlay = this.add.rectangle(width / 2, height / 2, width * 0.9, height * 0.6, 0x000000, 0.8)
         .setOrigin(0.5)
         .setDepth(50);
