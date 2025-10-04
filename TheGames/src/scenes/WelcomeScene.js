@@ -18,7 +18,9 @@ export default class WelcomeScene extends Phaser.Scene {
     this.add.text(width / 2, barHeight / 2, 'TheGames', { fontSize: '24px', color: textColor, fontStyle: 'bold' }).setOrigin(0.5);
 
     // Welcome message
-    this.add.text(width / 2, barHeight + 48, 'Select a game!', {
+    const { height } = this.sys.game.canvas;
+    const topOffset = barHeight + Math.max(24, height * 0.04);
+    this.add.text(width / 2, topOffset, 'Select a game!', {
       fontSize: '32px',
       color: textColor,
       fontStyle: 'bold',
@@ -30,7 +32,9 @@ export default class WelcomeScene extends Phaser.Scene {
     ];
 
     games.forEach((game, idx) => {
-      const y = barHeight + 120 + idx * 100;
+      // place game cards relative to canvas height so they remain visible on mobile
+      const cardSpacing = Math.max(80, height * 0.12);
+      const y = topOffset + 60 + idx * cardSpacing;
       // Modern card/button look (dark theme only)
       const btn = this.add.rectangle(width / 2, y, 280, 70, 0x23272f, 1)
         .setStrokeStyle(3, 0xf5f6fa)

@@ -90,11 +90,20 @@ canvas {
 
 /* Responsive canvas */
 @media (max-width: 600px), (max-height: 800px) {
+  .game-container {
+    /* Align to top on small screens so top bar is visible and tappable */
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: env(safe-area-inset-top, 12px);
+    width: 100vw;
+    height: 100vh;
+  }
+
   canvas {
+    /* Let the canvas scale proportionally to container width; don't force 100vh which can cause pointer offsets */
     width: 100vw !important;
-    height: 100vh !important;
+    height: auto !important;
     min-width: 100vw !important;
-    min-height: 100vh !important;
     max-width: 100vw !important;
     max-height: 100vh !important;
     border-radius: 0;

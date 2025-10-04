@@ -196,38 +196,44 @@ export default class ClickNumberScene extends Phaser.Scene {
 
   _emitConfetti() {
     const { width, height } = this.sys.game.canvas;
-    // create simple particle texture if not present
+    // fallback confetti using simple sprites + tweens (avoids ParticleEmitter API)
     const gfxKey = 'confetti-dot';
     if (!this.textures.exists(gfxKey)) {
       const g = this.make.graphics({ x: 0, y: 0, add: false });
       g.fillStyle(0xffffff, 1);
-      g.fillRect(0, 0, 6, 6);
-      g.generateTexture(gfxKey, 6, 6);
+      g.fillRect(0, 0, 8, 8);
+      g.generateTexture(gfxKey, 8, 8);
       g.destroy();
     }
 
-    const particles = this.add.particles(gfxKey).setDepth(60);
     const colors = [0xff4757, 0x1e90ff, 0x2ecc71, 0xffb142, 0x9b59b6];
-    const emitter = particles.createEmitter({
-      x: { min: width * 0.2, max: width * 0.8 },
-      y: -10,
-      speedY: { min: 200, max: 400 },
-      speedX: { min: -200, max: 200 },
-      lifespan: 1500,
-      gravityY: 800,
-      scale: { start: 1, end: 0.5 },
-      rotate: { min: 0, max: 360 },
-      quantity: 20,
-      tint: () => Phaser.Utils.Array.GetRandom(colors),
-    });
+    const count = 48;
+    for (let i = 0; i < count; i++) {
+      const x = Phaser.Math.Between(width * 0.15, width * 0.85);
+      const y = Phaser.Math.Between(-40, -10);
+      const dot = this.add.image(x, y, gfxKey)
+        .setOrigin(0.5)
+        .setDepth(60)
+        .setTint(Phaser.Utils.Array.GetRandom(colors))
+        .setScale(Phaser.Math.FloatBetween(0.8, 1.3))
+        .setAngle(Phaser.Math.Between(0, 360));
 
-    // stop emitter after short burst and remove particles after they die
-    this.time.delayedCall(500, () => {
-      emitter.stop();
-      this.time.delayedCall(1600, () => {
-        particles.destroy();
+      const endX = x + Phaser.Math.Between(-120, 120);
+      const duration = Phaser.Math.Between(1200, 2400);
+      const rot = Phaser.Math.Between(360, 1440) * (Math.random() < 0.5 ? -1 : 1);
+
+      this.tweens.add({
+        targets: dot,
+        x: endX,
+        y: height + 40,
+        angle: dot.angle + rot,
+        scale: 0.4,
+        ease: 'Cubic.easeIn',
+        duration,
+        delay: i * 18,
+        onComplete: () => dot.destroy()
       });
-    });
+    }
   }
 
     _showGameOver() {
