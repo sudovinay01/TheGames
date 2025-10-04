@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run: Dev Server & Open in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/TheGames",
+      "preLaunchTask": "Start Dev Server (subproject)",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome",
+      "runtimeArgs": [
+        "--disable-background-timer-throttling",
+        "--disable-features=TranslateUI"
+      ]
+    }
+  ]
+}
