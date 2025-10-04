@@ -44,7 +44,19 @@ if ('serviceWorker' in navigator) {
     // for 'sw.js' relative to the current document base (e.g. https://.../TheGames/sw.js).
     try {
       const swUrl = new URL('sw.js', document.baseURI).href;
-      navigator.serviceWorker.register(swUrl).then((reg) => {
+      // Derive a scope path from the document base so the SW is scoped to the
+      // repo subpath (for GitHub Pages project pages) instead of the origin root.
+      // Example: document.baseURI -> https://.../TheGames/  => scopePath = '/TheGames/'
+      let scopePath = '/';
+      try {
+        const basePath = new URL('.', document.baseURI).pathname;
+        scopePath = basePath.endsWith('/') ? basePath : basePath + '/';
+      } catch (e) {
+        // fallback to root scope if anything goes wrong computing base
+        scopePath = '/';
+      }
+
+      navigator.serviceWorker.register(swUrl, { scope: scopePath }).then((reg) => {
         console.log('Service worker registered:', reg.scope);
       }).catch((err) => console.warn('SW registration failed:', err));
     } catch (err) {
