@@ -24,6 +24,17 @@ jobs:
       - name: Install root deps
         run: npm ci
 
+      - name: Ensure VITE_BASE is set
+        # If the VITE_BASE secret is not provided, compute it from the repo name: '/<repo>/'
+        run: |
+          if [ -z "${{ secrets.VITE_BASE }}" ]; then
+            echo "VITE_BASE=/${{ github.event.repository.name }}/" >> $GITHUB_ENV
+            echo "Computed VITE_BASE=/${{ github.event.repository.name }}/"
+          else
+            echo "VITE_BASE=${{ secrets.VITE_BASE }}" >> $GITHUB_ENV
+            echo "Using provided VITE_BASE"
+          fi
+
       - name: Build TheGames subproject
         working-directory: TheGames
         env:
