@@ -176,6 +176,8 @@ export default class ClickNumberScene extends Phaser.Scene {
       if (this.score > this.highScore) {
         this.highScore = this.score;
         saveHighScore(GAME_CONFIG.STORAGE_KEY_CLICKNUMBER_HS, this.highScore);
+        // new high score — emit confetti
+        this._emitConfetti();
       }
       // After successful click, pick a new target and update circles.
       // Store this round into previous rounds history to exclude in the next N rounds.
@@ -190,6 +192,42 @@ export default class ClickNumberScene extends Phaser.Scene {
         // immediate game over on wrong click
         this._showGameOver();
     }
+  }
+
+  _emitConfetti() {
+    const { width, height } = this.sys.game.canvas;
+    // create simple particle texture if not present
+    const gfxKey = 'confetti-dot';
+    if (!this.textures.exists(gfxKey)) {
+      const g = this.make.graphics({ x: 0, y: 0, add: false });
+      g.fillStyle(0xffffff, 1);
+      g.fillRect(0, 0, 6, 6);
+      g.generateTexture(gfxKey, 6, 6);
+      g.destroy();
+    }
+
+    const particles = this.add.particles(gfxKey).setDepth(60);
+    const colors = [0xff4757, 0x1e90ff, 0x2ecc71, 0xffb142, 0x9b59b6];
+    const emitter = particles.createEmitter({
+      x: { min: width * 0.2, max: width * 0.8 },
+      y: -10,
+      speedY: { min: 200, max: 400 },
+      speedX: { min: -200, max: 200 },
+      lifespan: 1500,
+      gravityY: 800,
+      scale: { start: 1, end: 0.5 },
+      rotate: { min: 0, max: 360 },
+      quantity: 20,
+      tint: () => Phaser.Utils.Array.GetRandom(colors),
+    });
+
+    // stop emitter after short burst and remove particles after they die
+    this.time.delayedCall(500, () => {
+      emitter.stop();
+      this.time.delayedCall(1600, () => {
+        particles.destroy();
+      });
+    });
   }
 
     _showGameOver() {
