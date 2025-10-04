@@ -121,3 +121,15 @@ Contact & maintainers notes
 - If the repository gains many games or complex features, consider migrating to a modular loader and lazy-loading scenes to keep the initial bundle minimal.
 
 End of instructions — keep this file updated as the project evolves.
+
+
+PWA troubleshooting and remote dev notes
+
+- Browsers require the manifest and service worker to be served from the same origin as the app for installability. Remote dev environments (GitHub Codespaces, github.dev, etc.) may inject proxy redirects or CORS blocks that prevent the browser from fetching the manifest, breaking install prompt detection.
+- Always test installability on localhost or a deployed static host (GitHub Pages, Netlify, Vercel) for reliable results.
+- If the install prompt does not appear on first visit, check:
+  - Manifest is served from the same origin as the app (no proxy redirects, no CORS errors).
+  - Service worker is registered and controlling the page (see DevTools → Application → Service Workers).
+  - Manifest includes PNG icons at 192x192 and 512x512 (local files preferred).
+  - Test on localhost or a deployed static host, not through github.dev or Codespaces proxy URLs.
+  - If using a remote dev environment, deploy to GitHub Pages or Netlify for installability testing.
