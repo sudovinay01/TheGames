@@ -51,3 +51,13 @@ jobs:
           github_token: ${{ secrets.PAGES_PAT || secrets.GITHUB_TOKEN }}
           publish_dir: ./TheGames/dist
           # optional: keep docs or other settings here
+
+      - name: Debug built files (temporary)
+        if: always()
+        run: |
+          echo "--- Listing TheGames/dist ---"
+          ls -la TheGames/dist || true
+          echo "\n--- head: TheGames/dist/index.html ---"
+          sed -n '1,200p' TheGames/dist/index.html || true
+          echo "\n--- head: TheGames/dist/manifest.webmanifest ---"
+          sed -n '1,200p' TheGames/dist/manifest.webmanifest || true
