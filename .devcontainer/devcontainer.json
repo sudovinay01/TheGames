@@ -1,12 +1,7 @@
 {
     "name": "TheGames",
-    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18",
-    "features": {},
-    "workspaceFolder": "/workspace",
-    "forwardPorts": [
-        5173
-    ],
-    "postCreateCommand": "npm install",
+    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:1-22",
+    "forwardPorts": [5173],
     "customizations": {
         "vscode": {
             "extensions": [
@@ -14,5 +9,8 @@
                 "dbaeumer.vscode-eslint"
             ]
         }
-    }
+    },
+    "postCreateCommand": "npm --prefix TheGames install"
+    ,
+    "postAttachCommand": "printf \"To run the project:\\n  npm run dev (from workspace root)\\nOr: npm --prefix TheGames run dev -- --host\\n\""
 }

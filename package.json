@@ -1,0 +1,18 @@
+{
+  "name": "thegames-root",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "npm --prefix TheGames run dev -- --host",
+    "build": "npm --prefix TheGames run build",
+    "preview": "npm --prefix TheGames run preview",
+    "start-subproject": "npm --prefix TheGames run dev -- --host"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "vite-plugin-pwa": "^1.0.3"
+  }
+}
