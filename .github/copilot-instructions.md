@@ -12,9 +12,9 @@ High-level project summary
 - Stack: Vite + Phaser 3 (JavaScript) for client-side mini-games. PWA support via vite-plugin-pwa and a simple service worker. No backend; data persisted locally (localStorage).
 - Structure:
   - `index.html` — app shell and entry point
-  - `src/main.js` — boots Phaser and registers scenes
-  - `src/scenes/` — Phaser Scene modules (each mini-game)
-  - `src/styles.css` — global styles
+  - `TheGames/src/main.js` — boots Phaser and registers scenes
+  - `TheGames/src/scenes/` — Phaser Scene modules (each mini-game; all game scenes must be placed here)
+  - `TheGames/src/styles.css` — global styles
   - `manifest.webmanifest`, `sw.js` — PWA files
   - `vite.config.js` — Vite + PWA plugin configuration
     - `TheGames/vite.config.js` — Vite config in the subproject (server.host/port configured for the devcontainer)
@@ -60,15 +60,15 @@ How to ask for new features or bug fixes (recommended prompt templates)
 
 - Add a new mini‑game scene
 
-  - "Add a new Phaser Scene named `WhackAMoleScene` that shows 3 holes and randomly spawns moles. A tap on a mole increases score. Persist high score to localStorage. Include scene file `src/scenes/WhackAMoleScene.js` and update `src/main.js` to register it. Keep it JavaScript and keep bundle size small."
+  - "Add a new Phaser Scene named `WhackAMoleScene` that shows 3 holes and randomly spawns moles. A tap on a mole increases score. Persist high score to localStorage. Include scene file `TheGames/src/scenes/WhackAMoleScene.js` and update `TheGames/src/main.js` to register it. Keep it JavaScript and keep bundle size small."
 
 - Improve responsiveness
 
-  - "Make the ClickNumberScene responsive on small phones: scale fonts and center controls in portrait and landscape; ensure the game canvas remains fully visible without overflow. Edit `src/scenes/ClickNumberScene.js` and `src/styles.css`."
+  - "Make the ClickNumberScene responsive on small phones: scale fonts and center controls in portrait and landscape; ensure the game canvas remains fully visible without overflow. Edit `TheGames/src/scenes/ClickNumberScene.js` and `TheGames/src/styles.css`."
 
 - Add physics with Matter.js
 
-  - "Add Matter.js physics to `src/scenes/PhysicsScene.js` and show an example of a sprite falling and colliding with a ground body. Use CDN or npm dependency; prefer minimal install."
+  - "Add Matter.js physics to `TheGames/src/scenes/PhysicsScene.js` and show an example of a sprite falling and colliding with a ground body. Use CDN or npm dependency; prefer minimal install."
 
 - Add sounds and assets
 
