@@ -46,16 +46,22 @@ export default class ClickNumberScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(0);
 
-    // Back button
+    // Back button using an absolute interactive Zone so hit area matches the visual exactly
     const backX = barHeight / 2 + 10;
-    const backBtn = this.add.rectangle(backX, barHeight / 2, 44, 44, circleColor, 0.8)
-      .setOrigin(0.5)
-      .setStrokeStyle(2, circleStroke)
-      .setInteractive({ useHandCursor: true })
-      .setDepth(10);
-    const backArrow = this.add.text(backX, barHeight / 2, '←', { fontSize: '28px', color: textColor })
-      .setOrigin(0.5)
-      .setDepth(11);
+    const backY = barHeight / 2;
+    // Create a zone at absolute canvas coords for the hit area
+    const backZone = this.add.zone(backX, backY, 64, 64).setOrigin(0.5).setInteractive({ useHandCursor: true }).setDepth(60);
+    // Visuals placed at the same coordinates
+    const backRect = this.add.rectangle(backX, backY, 44, 44, circleColor, 0.8).setOrigin(0.5).setStrokeStyle(2, circleStroke).setDepth(61);
+    const backArrow = this.add.text(backX, backY, '←', { fontSize: '28px', color: textColor }).setOrigin(0.5).setDepth(62);
+    // Debug stroke aligned to the zone
+    const debugHit = this.add.rectangle(backX, backY, 64, 64).setOrigin(0.5).setStrokeStyle(2, 0xff0000).setDepth(63);
+
+    // Visual feedback for the interactive hit area
+    backZone.on('pointerover', () => debugHit.setStrokeStyle(3, 0x00ff00));
+    backZone.on('pointerout', () => debugHit.setStrokeStyle(2, 0xff0000));
+    backZone.on('pointerdown', () => debugHit.setStrokeStyle(3, 0x0000ff));
+    backZone.on('pointerup', () => debugHit.setStrokeStyle(3, 0x00ff00));
 
     this.input.enabled = true;
 
@@ -63,7 +69,8 @@ export default class ClickNumberScene extends Phaser.Scene {
       this.scene.stop(SCENE_KEYS.CLICK_NUMBER);
       this.scene.start(SCENE_KEYS.WELCOME);
     };
-    backBtn.on('pointerup', goBack);
+  // ensure the absolute zone triggers navigation
+  backZone.on('pointerup', goBack);
 
     // Minimal pointer debug (can be enabled if needed)
     this.input.on('pointerdown', (pointer) => {
